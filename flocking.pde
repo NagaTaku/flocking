@@ -1,31 +1,34 @@
-Flock flock;
+Flock flock_mikata;
+Flock flock_teki;
 
 void setup() {
   size(640, 360);
-  flock = new Flock();
+  flock_mikata = new Flock();
+  flock_teki = new Flock();
   // Add an initial set of boids into the system
   for (int i = 0; i < 70; i++) {
-    flock.addBoid(new Boid(width*3/4,height/4+i*3, false));
+    flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, false));
   }
-  //for (int i = 0; i < 70; i++) {
-  //  flock.addBoid(new Boid(width/4,height/4+i*3, true));
-  //}
+  for (int i = 0; i < 70; i++) {
+    flock_mikata.addBoid(new Boid(width/4,height/4+i*3, true));
+  }
 }
 
 void draw() {
   background(50);
-  flock.run();
+  flock_teki.run();
+  flock_mikata.run();
 }
 
 // Add a new boid into the System
 void mousePressed() {
 //  flock.addBoid(new Boid(mouseX,mouseY));
   if (mouseButton == LEFT) {
-    flock.clickedArea = new PVector(mouseX,mouseY);
+    flock_mikata.clickedArea = new PVector(mouseX,mouseY);
   }else if (mouseButton == RIGHT) {
-    flock.clickedArea = null;
+    flock_mikata.clickedArea = null;
   }
-  println(flock.clickedArea);
+  println(flock_mikata.clickedArea);
 }
 
 
@@ -117,8 +120,8 @@ class Boid {
     applyForce(ali);
     applyForce(coh);
     
-    if(flock.clickedArea != null){
-      PVector MousePosition = new PVector(flock.clickedArea.x, flock.clickedArea.y);
+    if(flock_mikata.clickedArea != null && ally){
+      PVector MousePosition = new PVector(flock_mikata.clickedArea.x, flock_mikata.clickedArea.y);
       println(MousePosition);
       MousePosition.sub(position);
       MousePosition.normalize();
