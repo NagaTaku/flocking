@@ -7,9 +7,9 @@ void setup() {
   for (int i = 0; i < 70; i++) {
     flock.addBoid(new Boid(width*3/4,height/4+i*3, false));
   }
-  for (int i = 0; i < 70; i++) {
-    flock.addBoid(new Boid(width/4,height/4+i*3, true));
-  }
+  //for (int i = 0; i < 70; i++) {
+  //  flock.addBoid(new Boid(width/4,height/4+i*3, true));
+  //}
 }
 
 void draw() {
