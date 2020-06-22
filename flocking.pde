@@ -7,9 +7,9 @@ void setup() {
   for (int i = 0; i < 70; i++) {
     flock.addBoid(new Boid(width*3/4,height/4+i*3, false));
   }
-  for (int i = 0; i < 70; i++) {
-    flock.addBoid(new Boid(width/4,height/4+i*3, true));
-  }
+  //for (int i = 0; i < 70; i++) {
+  //  flock.addBoid(new Boid(width/4,height/4+i*3, true));
+  //}
 }
 
 void draw() {
@@ -18,9 +18,15 @@ void draw() {
 }
 
 // Add a new boid into the System
-//void mousePressed() {
+void mousePressed() {
 //  flock.addBoid(new Boid(mouseX,mouseY));
-//}
+  if (mouseButton == LEFT) {
+    flock.clickedArea = new PVector(mouseX,mouseY);
+  }else if (mouseButton == RIGHT) {
+    flock.clickedArea = null;
+  }
+  println(flock.clickedArea);
+}
 
 
 
@@ -28,6 +34,7 @@ void draw() {
 
 class Flock {
   ArrayList<Boid> boids; // An ArrayList for all the boids
+  PVector clickedArea;
 
   Flock() {
     boids = new ArrayList<Boid>(); // Initialize the ArrayList
@@ -90,7 +97,7 @@ class Boid {
     borders();
     render();
   }
-
+  
   void applyForce(PVector force) {
     // We could add mass here if we want A = F / M
     acceleration.add(force);
@@ -110,8 +117,9 @@ class Boid {
     applyForce(ali);
     applyForce(coh);
     
-    if(mousePressed){
-      PVector MousePosition=new PVector(mouseX,mouseY);
+    if(flock.clickedArea != null){
+      PVector MousePosition = new PVector(flock.clickedArea.x, flock.clickedArea.y);
+      println(MousePosition);
       MousePosition.sub(position);
       MousePosition.normalize();
       MousePosition.mult(0.1);
