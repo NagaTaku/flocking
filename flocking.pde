@@ -52,11 +52,15 @@ class Flock {
   void run() {
     if (ally) {
       for (Boid b : boids) {
-        b.run(boids, flock_teki.boids);  // Passing the entire list of boids to each boid individually
+        if (b.alive){
+          b.run(boids, flock_teki.boids);  // Passing the entire list of boids to each boid individually
+        }
       }
     }else {
       for (Boid b : boids) {
-        b.run(boids, flock_mikata.boids);  // Passing the entire list of boids to each boid individually
+        if (b.alive){
+          b.run(boids, flock_mikata.boids);  // Passing the entire list of boids to each boid individually
+        }
       }
     }
   }
@@ -81,6 +85,8 @@ class Boid {
   float maxforce;    // Maximum steering force
   float maxspeed;    // Maximum speed
   Boolean ally;
+  int hp;
+  Boolean alive;
 
   Boid(float x, float y, Boolean mikata) {
     acceleration = new PVector(0, 0);
@@ -104,18 +110,18 @@ class Boid {
     r = 2.0;
     maxspeed = 0.7;
     maxforce = 0.03;
+    hp = 100;
+    alive = true;
   }
 
   void run(ArrayList<Boid> boids, ArrayList<Boid> teki_boids) {
     flock(boids, teki_boids);
-    //if (ally) {
-      Boid b = battle(teki_boids); 
-      if (b != null) {
-        acceleration.mult(0);
-      } else {
-        update();
-      }
-    //}
+    Boid b = battle(teki_boids); 
+    if (b != null) {
+      acceleration.mult(0);
+    } else {
+      update();
+    }
     borders();
     render();
   }
@@ -313,20 +319,23 @@ class Boid {
     float min_boids = 100000000;
     Boid battle_boid = null;
     for (Boid other : teki_boids) {
-      float d = PVector.dist(position, other.position);
-      if ((d > 0) && (d < distance)) {
-        if (min_boids > d) {
-          battle_boid = other;
-          min_boids = d;
+      if (other.alive){
+        float d = PVector.dist(position, other.position);
+        if ((d > 0) && (d < distance)) {
+          if (min_boids > d) {
+            battle_boid = other;
+            min_boids = d;
+          }
         }
       }
     }
-    
-    //if (battle_boid != null) {
+    if (battle_boid != null) {
+      battle_boid.hp -= 1;
+      if (battle_boid.hp <= 0) {
+        battle_boid.alive = false;
+      }
+    }
     return battle_boid;
-    //} else {
-    //  return null;
-    //}
   }
 }
 
