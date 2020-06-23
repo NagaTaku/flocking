@@ -24,9 +24,9 @@ void draw() {
 void mousePressed() {
 //  flock.addBoid(new Boid(mouseX,mouseY));
   if (mouseButton == LEFT) {
-    flock_mikata.clickedArea = new PVector(mouseX,mouseY);
+    flock_mikata.clickedArea.add(new PVector(mouseX,mouseY));
   }else if (mouseButton == RIGHT) {
-    flock_mikata.clickedArea = null;
+    flock_mikata.clickedArea.clear();
   }
   println(flock_mikata.clickedArea);
 }
@@ -37,10 +37,11 @@ void mousePressed() {
 
 class Flock {
   ArrayList<Boid> boids; // An ArrayList for all the boids
-  PVector clickedArea;
+  ArrayList<PVector> clickedArea;
 
   Flock() {
     boids = new ArrayList<Boid>(); // Initialize the ArrayList
+    clickedArea = new ArrayList<PVector>();
   }
 
   void run() {
@@ -120,9 +121,17 @@ class Boid {
     applyForce(ali);
     applyForce(coh);
     
-    if(flock_mikata.clickedArea != null && ally){
-      PVector MousePosition = new PVector(flock_mikata.clickedArea.x, flock_mikata.clickedArea.y);
-      println(MousePosition);
+    if(flock_mikata.clickedArea.size() != 0 && ally){
+      double MIN = 10000000000.0;
+      PVector MousePosition = new PVector(0,0);
+      for(int i = 0; i < flock_mikata.clickedArea.size(); i++) {
+        double l = (flock_mikata.clickedArea.get(i).x-position.x)*(flock_mikata.clickedArea.get(i).x-position.x) + (flock_mikata.clickedArea.get(i).y-position.y)*(flock_mikata.clickedArea.get(i).y-position.y);
+        if (l < MIN) {
+          MousePosition = new PVector(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y);
+          MIN = l;
+        }
+      }
+      //println(MousePosition);
       MousePosition.sub(position);
       MousePosition.normalize();
       MousePosition.mult(0.1);
