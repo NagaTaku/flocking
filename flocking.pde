@@ -2,13 +2,15 @@ Flock flock_mikata;
 Flock flock_teki;
 int state = 0;
 
-int MIKATA_NUM = 70;
-int TEKI_NUM = 100;
+int MIKATA_NUM = 100;
+int TEKI_NUM = 50;
 int MIKATA_HP = 100;
-int TEKI_HP = 200;
+int TEKI_HP = 1000;
 
 void setup() {
   size(640, 360);
+  textSize(16);
+  textAlign(CENTER);
   initFlock();
 }
 
@@ -16,8 +18,9 @@ void draw() {
   background(50);
   switch(state) {
     case 0:
-      text("Press Space Key", 280, 180);
+      text("Press Space Key to start", 320, 180);
       break;
+      
     case 1:
       flock_teki.run();
       flock_mikata.run();
@@ -25,6 +28,17 @@ void draw() {
         ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 10, 10);
       }
       break;
+      
+    case 2:
+      text("You Win!!!", 320, 180);
+      text("Press [Space] Key to restart", 320, 200);
+      break;
+      
+    case 3:
+      text("You Lose...", 320, 180);
+      text("Press [Space] Key to restart", 320, 200);
+      break;
+      
     default:
       background(50);
       break;
@@ -352,6 +366,11 @@ class Boid {
       battle_boid.hp -= 1;
       if (battle_boid.hp <= 0) {
         battle_boid.alive = false;
+        if (aliveNum(flock_teki) == 0) {
+          state = 2;
+        } else if(aliveNum(flock_mikata) == 0) {
+          state = 3;
+        }
       }
     }
     return battle_boid;
@@ -368,6 +387,16 @@ void initFlock() {
   for (int i = 0; i < TEKI_NUM; i++) {
     flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*TEKI_NUM)), flock_teki.ally));
   }
+}
+
+int aliveNum(Flock flock) {
+  int num = 0;
+  for (int i = 0; i < flock.boids.size(); i++) {
+    if (flock.boids.get(i).alive) {
+      num += 1;
+    }
+  }
+  return num;
 }
 
 
