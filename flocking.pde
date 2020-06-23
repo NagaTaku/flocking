@@ -50,8 +50,14 @@ class Flock {
   }
 
   void run() {
-    for (Boid b : boids) {
-      b.run(boids);  // Passing the entire list of boids to each boid individually
+    if (ally) {
+      for (Boid b : boids) {
+        b.run(boids, flock_teki.boids);  // Passing the entire list of boids to each boid individually
+      }
+    }else {
+      for (Boid b : boids) {
+        b.run(boids, flock_mikata.boids);  // Passing the entire list of boids to each boid individually
+      }
     }
   }
 
@@ -100,9 +106,16 @@ class Boid {
     maxforce = 0.03;
   }
 
-  void run(ArrayList<Boid> boids/*, ArrayList<Boid> teki_boids*/) {
-    flock(boids/*, teki_boids*/);
-    update();
+  void run(ArrayList<Boid> boids, ArrayList<Boid> teki_boids) {
+    flock(boids, teki_boids);
+    //if (ally) {
+      Boid b = battle(teki_boids); 
+      if (b != null) {
+        acceleration.mult(0);
+      } else {
+        update();
+      }
+    //}
     borders();
     render();
   }
@@ -113,7 +126,7 @@ class Boid {
   }
 
   // We accumulate a new acceleration each time based on three rules
-  void flock(ArrayList<Boid> boids) {
+  void flock(ArrayList<Boid> boids, ArrayList<Boid> teki_boids) {
     PVector sep = separate(boids);   // Separation
     PVector ali = align(boids);      // Alignment
     PVector coh = cohesion(boids);   // Cohesion
@@ -142,6 +155,7 @@ class Boid {
       MousePosition.mult(0.05);
       applyForce(MousePosition);
     }
+    
   }
 
   // Method to update position
@@ -293,7 +307,30 @@ class Boid {
       return new PVector(0, 0);
     }
   }
+  
+  Boid battle(ArrayList<Boid> teki_boids) {
+    float distance = 30;
+    float min_boids = 100000000;
+    Boid battle_boid = null;
+    for (Boid other : teki_boids) {
+      float d = PVector.dist(position, other.position);
+      if ((d > 0) && (d < distance)) {
+        if (min_boids > d) {
+          battle_boid = other;
+          min_boids = d;
+        }
+      }
+    }
+    
+    //if (battle_boid != null) {
+    return battle_boid;
+    //} else {
+    //  return null;
+    //}
+  }
 }
+
+
 
 void keyPressed() {
   if (keyCode == ENTER){
