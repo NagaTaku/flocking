@@ -1,5 +1,7 @@
 Flock flock_mikata;
 Flock flock_teki;
+int state = 0;
+
 int MIKATA_NUM = 70;
 int TEKI_NUM = 100;
 int MIKATA_HP = 100;
@@ -7,23 +9,25 @@ int TEKI_HP = 200;
 
 void setup() {
   size(640, 360);
-  flock_mikata = new Flock(true);
-  flock_teki = new Flock(false);
-  // Add an initial set of boids into the system
-  for (int i = 0; i < MIKATA_NUM; i++) {
-    flock_mikata.addBoid(new Boid(width/4,height/4+i*(float(height)/(2.0*MIKATA_NUM)), flock_mikata.ally));
-  }
-  for (int i = 0; i < TEKI_NUM; i++) {
-    flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*TEKI_NUM)), flock_teki.ally));
-  }
+  initFlock();
 }
 
 void draw() {
   background(50);
-  flock_teki.run();
-  flock_mikata.run();
-  for (int i = 0; i < flock_mikata.clickedArea.size(); i++) {
-    ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 10, 10);
+  switch(state) {
+    case 0:
+      text("Press Space Key", 280, 180);
+      break;
+    case 1:
+      flock_teki.run();
+      flock_mikata.run();
+      for (int i = 0; i < flock_mikata.clickedArea.size(); i++) {
+        ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 10, 10);
+      }
+      break;
+    default:
+      background(50);
+      break;
   }
 }
 
@@ -354,12 +358,25 @@ class Boid {
   }
 }
 
+void initFlock() {
+  flock_mikata = new Flock(true);
+  flock_teki = new Flock(false);
+  // Add an initial set of boids into the system
+  for (int i = 0; i < MIKATA_NUM; i++) {
+    flock_mikata.addBoid(new Boid(width/4,height/4+i*(float(height)/(2.0*MIKATA_NUM)), flock_mikata.ally));
+  }
+  for (int i = 0; i < TEKI_NUM; i++) {
+    flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*TEKI_NUM)), flock_teki.ally));
+  }
+}
+
 
 
 void keyPressed() {
   if (keyCode == ENTER){
     save("sample.png");
   } else if (keyCode == ' ') {
-    setup();
+    initFlock();
+    state = 1;
   }
 }
