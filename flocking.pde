@@ -175,6 +175,9 @@ class Boid {
     
     fill(200, 100);
     stroke(255);
+    if (!ally) {
+      stroke(255,0,0);
+    }
     pushMatrix();
     translate(position.x, position.y);
     rotate(theta);
