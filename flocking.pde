@@ -7,6 +7,9 @@ int TEKI_NUM = 50;
 int MIKATA_HP = 100;
 int TEKI_HP = 1000;
 
+int mikata_alive;
+int teki_alive;
+
 void setup() {
   size(640, 360);
   textSize(16);
@@ -27,6 +30,7 @@ void draw() {
       for (int i = 0; i < flock_mikata.clickedArea.size(); i++) {
         ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 10, 10);
       }
+      text("You : "+mikata_alive + "   COM : "+teki_alive, 100, 30);
       break;
       
     case 2:
@@ -366,6 +370,11 @@ class Boid {
       battle_boid.hp -= 1;
       if (battle_boid.hp <= 0) {
         battle_boid.alive = false;
+        if (battle_boid.ally) {
+          mikata_alive -= 1;
+        } else {
+          teki_alive -= 1;
+        }
         if (aliveNum(flock_teki) == 0) {
           state = 2;
         } else if(aliveNum(flock_mikata) == 0) {
@@ -387,6 +396,8 @@ void initFlock() {
   for (int i = 0; i < TEKI_NUM; i++) {
     flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*TEKI_NUM)), flock_teki.ally));
   }
+  mikata_alive = MIKATA_NUM;
+  teki_alive = TEKI_NUM;
 }
 
 int aliveNum(Flock flock) {
