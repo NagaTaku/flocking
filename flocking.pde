@@ -1,20 +1,20 @@
 Flock flock_mikata;
 Flock flock_teki;
-int mikata_num = 70;
-int teki_num = 100;
-int mikata_hp = 100;
-int teki_hp = 100;
+int MIKATA_NUM = 70;
+int TEKI_NUM = 100;
+int MIKATA_HP = 100;
+int TEKI_HP = 200;
 
 void setup() {
   size(640, 360);
   flock_mikata = new Flock(true);
   flock_teki = new Flock(false);
   // Add an initial set of boids into the system
-  for (int i = 0; i < mikata_num; i++) {
-    flock_mikata.addBoid(new Boid(width/4,height/4+i*(float(height)/(2.0*mikata_num)), flock_mikata.ally));
+  for (int i = 0; i < MIKATA_NUM; i++) {
+    flock_mikata.addBoid(new Boid(width/4,height/4+i*(float(height)/(2.0*MIKATA_NUM)), flock_mikata.ally));
   }
-  for (int i = 0; i < teki_num; i++) {
-    flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*teki_num)), flock_teki.ally));
+  for (int i = 0; i < TEKI_NUM; i++) {
+    flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*TEKI_NUM)), flock_teki.ally));
   }
 }
 
@@ -116,9 +116,9 @@ class Boid {
     maxspeed = 0.7;
     maxforce = 0.03;
     if (ally) {
-      hp = mikata_hp;
+      hp = MIKATA_HP;
     }else {
-      hp = teki_hp;
+      hp = TEKI_HP;
     }
     alive = true;
   }
@@ -239,15 +239,17 @@ class Boid {
     int count = 0;
     // For every boid in the system, check if it's too close
     for (Boid other : boids) {
-      float d = PVector.dist(position, other.position);
-      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if ((d > 0) && (d < desiredseparation)) {
-        // Calculate vector pointing away from neighbor
-        PVector diff = PVector.sub(position, other.position);
-        diff.normalize();
-        diff.div(d);        // Weight by distance
-        steer.add(diff);
-        count++;            // Keep track of how many
+      if (other.alive){
+        float d = PVector.dist(position, other.position);
+        // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+        if ((d > 0) && (d < desiredseparation)) {
+          // Calculate vector pointing away from neighbor
+          PVector diff = PVector.sub(position, other.position);
+          diff.normalize();
+          diff.div(d);        // Weight by distance
+          steer.add(diff);
+          count++;            // Keep track of how many
+        }
       }
     }
     // Average -- divide by how many
@@ -277,10 +279,12 @@ class Boid {
     PVector sum = new PVector(0, 0);
     int count = 0;
     for (Boid other : boids) {
-      float d = PVector.dist(position, other.position);
-      if ((d > 0) && (d < neighbordist)) {
-        sum.add(other.velocity);
-        count++;
+      if(other.alive){
+        float d = PVector.dist(position, other.position);
+        if ((d > 0) && (d < neighbordist)) {
+          sum.add(other.velocity);
+          count++;
+        }
       }
     }
     if (count > 0) {
@@ -308,10 +312,12 @@ class Boid {
     PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all positions
     int count = 0;
     for (Boid other : boids) {
-      float d = PVector.dist(position, other.position);
-      if ((d > 0) && (d < neighbordist)) {
-        sum.add(other.position); // Add position
-        count++;
+      if(other.alive){
+        float d = PVector.dist(position, other.position);
+        if ((d > 0) && (d < neighbordist)) {
+          sum.add(other.position); // Add position
+          count++;
+        }
       }
     }
     if (count > 0) {
