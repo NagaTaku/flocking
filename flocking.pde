@@ -288,5 +288,17 @@ class Boid {
 }
 
 void keyPressed() {
-  save("sample.png");
+  if (keyCode == ENTER){
+    save("sample.png");
+  } else if (keyCode == ' ') {
+    flock_mikata = new Flock();
+    flock_teki = new Flock();
+    // Add an initial set of boids into the system
+    for (int i = 0; i < 70; i++) {
+      flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, false));
+    }
+    for (int i = 0; i < 70; i++) {
+      flock_mikata.addBoid(new Boid(width/4,height/4+i*3, true));
+    }
+  }
 }
