@@ -1,0 +1,23 @@
+{
+    "version": "2.2.1",
+    "tasks": [
+      {
+        "label": "Run",
+        "command": "C:\\Program Files\\processing\\processing-java",
+        "type": "process",
+        "args": [
+          "--force",
+          "--sketch=${workspaceRoot}",
+          "--run"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      }
+    ]
+}

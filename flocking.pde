@@ -18,6 +18,9 @@ void draw() {
   background(50);
   flock_teki.run();
   flock_mikata.run();
+  for (int i = 0; i < flock_mikata.clickedArea.size(); i++) {
+    ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 5, 5);
+  }
 }
 
 // Add a new boid into the System
@@ -134,7 +137,7 @@ class Boid {
       //println(MousePosition);
       MousePosition.sub(position);
       MousePosition.normalize();
-      MousePosition.mult(0.1);
+      MousePosition.mult(0.05);
       applyForce(MousePosition);
     }
   }
