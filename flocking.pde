@@ -3,14 +3,14 @@ Flock flock_teki;
 
 void setup() {
   size(640, 360);
-  flock_mikata = new Flock();
-  flock_teki = new Flock();
+  flock_mikata = new Flock(true);
+  flock_teki = new Flock(false);
   // Add an initial set of boids into the system
   for (int i = 0; i < 70; i++) {
-    flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, false));
+    flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, flock_teki.ally));
   }
   for (int i = 0; i < 70; i++) {
-    flock_mikata.addBoid(new Boid(width/4,height/4+i*3, true));
+    flock_mikata.addBoid(new Boid(width/4,height/4+i*3, flock_mikata.ally));
   }
 }
 
@@ -41,8 +41,10 @@ void mousePressed() {
 class Flock {
   ArrayList<Boid> boids; // An ArrayList for all the boids
   ArrayList<PVector> clickedArea;
+  Boolean ally;
 
-  Flock() {
+  Flock(Boolean mikata) {
+    ally = mikata;
     boids = new ArrayList<Boid>(); // Initialize the ArrayList
     clickedArea = new ArrayList<PVector>();
   }
@@ -98,8 +100,8 @@ class Boid {
     maxforce = 0.03;
   }
 
-  void run(ArrayList<Boid> boids) {
-    flock(boids);
+  void run(ArrayList<Boid> boids/*, ArrayList<Boid> teki_boids*/) {
+    flock(boids/*, teki_boids*/);
     update();
     borders();
     render();
@@ -297,14 +299,14 @@ void keyPressed() {
   if (keyCode == ENTER){
     save("sample.png");
   } else if (keyCode == ' ') {
-    flock_mikata = new Flock();
-    flock_teki = new Flock();
+    flock_mikata = new Flock(true);
+    flock_teki = new Flock(false);
     // Add an initial set of boids into the system
     for (int i = 0; i < 70; i++) {
-      flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, false));
+      flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, flock_teki.ally));
     }
     for (int i = 0; i < 70; i++) {
-      flock_mikata.addBoid(new Boid(width/4,height/4+i*3, true));
+      flock_mikata.addBoid(new Boid(width/4,height/4+i*3, flock_mikata.ally));
     }
   }
 }
