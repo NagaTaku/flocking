@@ -1,16 +1,20 @@
 Flock flock_mikata;
 Flock flock_teki;
+int mikata_num = 70;
+int teki_num = 100;
+int mikata_hp = 100;
+int teki_hp = 100;
 
 void setup() {
   size(640, 360);
   flock_mikata = new Flock(true);
   flock_teki = new Flock(false);
   // Add an initial set of boids into the system
-  for (int i = 0; i < 70; i++) {
-    flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, flock_teki.ally));
+  for (int i = 0; i < mikata_num; i++) {
+    flock_mikata.addBoid(new Boid(width/4,height/4+i*(float(height)/(2.0*mikata_num)), flock_mikata.ally));
   }
-  for (int i = 0; i < 70; i++) {
-    flock_mikata.addBoid(new Boid(width/4,height/4+i*3, flock_mikata.ally));
+  for (int i = 0; i < teki_num; i++) {
+    flock_teki.addBoid(new Boid(width*3/4,height/4+i*(float(height)/(2.0*teki_num)), flock_teki.ally));
   }
 }
 
@@ -19,7 +23,7 @@ void draw() {
   flock_teki.run();
   flock_mikata.run();
   for (int i = 0; i < flock_mikata.clickedArea.size(); i++) {
-    ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 5, 5);
+    ellipse(flock_mikata.clickedArea.get(i).x, flock_mikata.clickedArea.get(i).y, 10, 10);
   }
 }
 
@@ -27,6 +31,7 @@ void draw() {
 void mousePressed() {
 //  flock.addBoid(new Boid(mouseX,mouseY));
   if (mouseButton == LEFT) {
+    flock_mikata.clickedArea.clear();
     flock_mikata.clickedArea.add(new PVector(mouseX,mouseY));
   }else if (mouseButton == RIGHT) {
     flock_mikata.clickedArea.clear();
@@ -110,7 +115,11 @@ class Boid {
     r = 2.0;
     maxspeed = 0.7;
     maxforce = 0.03;
-    hp = 100;
+    if (ally) {
+      hp = mikata_hp;
+    }else {
+      hp = teki_hp;
+    }
     alive = true;
   }
 
@@ -345,14 +354,6 @@ void keyPressed() {
   if (keyCode == ENTER){
     save("sample.png");
   } else if (keyCode == ' ') {
-    flock_mikata = new Flock(true);
-    flock_teki = new Flock(false);
-    // Add an initial set of boids into the system
-    for (int i = 0; i < 70; i++) {
-      flock_teki.addBoid(new Boid(width*3/4,height/4+i*3, flock_teki.ally));
-    }
-    for (int i = 0; i < 70; i++) {
-      flock_mikata.addBoid(new Boid(width/4,height/4+i*3, flock_mikata.ally));
-    }
+    setup();
   }
 }
